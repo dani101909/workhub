@@ -45,6 +45,8 @@ const UserSchema = new mongoose.Schema(
     experiencia: [ExperienciaSchema],
     certificaciones: [CertificacionSchema],
     cvUrl: { type: String, trim: true },
+    // Solo para cuentas de rol "empresa": la empresa que administran
+    empresa: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
   },
   { timestamps: true }
 );
