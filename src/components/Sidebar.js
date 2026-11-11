@@ -3,14 +3,20 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-const enlaces = [
+const ENLACES_CANDIDATO = [
   { href: "/vacantes", etiqueta: "Vacantes", icono: "💼" },
   { href: "/empresas", etiqueta: "Empresas", icono: "🏢" },
   { href: "/aplicaciones", etiqueta: "Aplicaciones", icono: "📋" },
   { href: "/perfil", etiqueta: "Mi Perfil", icono: "👤" },
 ];
 
-export default function Sidebar({ nombre, iniciales }) {
+export default function Sidebar({
+  nombre,
+  iniciales,
+  enlaces = ENLACES_CANDIDATO,
+  subtitulo = "Bolsa de Trabajo",
+  perfilHref = "/perfil",
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -30,7 +36,7 @@ export default function Sidebar({ nombre, iniciales }) {
           <p className="font-[family-name:var(--font-outfit)] text-base font-bold leading-none text-white">
             WorkHub
           </p>
-          <p className="mt-1 text-[11px] text-slate-400">Bolsa de Trabajo</p>
+          <p className="mt-1 text-[11px] text-slate-400">{subtitulo}</p>
         </div>
       </div>
 
@@ -77,7 +83,7 @@ export default function Sidebar({ nombre, iniciales }) {
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-white">{nombre}</p>
           <Link
-            href="/perfil"
+            href={perfilHref}
             className="text-[11px] text-slate-400 hover:text-slate-200"
           >
             Ver perfil →

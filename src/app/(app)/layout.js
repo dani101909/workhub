@@ -20,8 +20,11 @@ export default async function AppLayout({ children }) {
   if (!sesion) redirect("/login");
 
   await connectDB();
-  const usuario = await User.findById(sesion.id).select("nombre").lean();
+  const usuario = await User.findById(sesion.id).select("nombre rol").lean();
   if (!usuario) redirect("/login");
+
+  // Las cuentas de empresa usan su propio panel
+  if (usuario.rol === "empresa") redirect("/empresa/vacantes");
 
   return (
     <div className="flex min-h-screen bg-[#f1f4f9] text-slate-900">

@@ -2,12 +2,13 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/mongodb";
 import { guardarSesion } from "@/lib/auth";
 import User from "@/models/User";
+import Company from "@/models/Company";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request) {
   try {
-    const { nombre, email, password } = await request.json();
+    const { nombre, email, password, tipo, nombreEmpresa } = await request.json();
 
     if (!nombre || !email || !password) {
       return Response.json(
@@ -30,6 +31,18 @@ export async function POST(request) {
       );
     }
 
+    // Solo se aceptan estos dos tipos de cuenta; cualquier otro valor
+    // se trata como candidato
+    const esEmpresa = tipo === "empresa";
+    const nombreEmp = typeof nombreEmpresa === "string" ? nombreEmpresa.trim() : "";
+
+    if (esEmpresa && !nombreEmp) {
+      return Response.json(
+        { ok: false, error: "El nombre de la empresa es obligatorio" },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
     const existente = await User.findOne({ email: email.toLowerCase() });
@@ -42,12 +55,25 @@ export async function POST(request) {
 
     const passwordCifrada = await bcrypt.hash(password, 10);
 
-    // El rol siempre inicia como "candidato"; no se acepta desde el formulario
-    const usuario = await User.create({
-      nombre,
-      email,
-      password: passwordCifrada,
-    });
+    let empresa = null;
+    if (esEmpresa) {
+      empresa = await Company.create({ nombre: nombreEmp.slice(0, 100) });
+    }
+
+    let usuario;
+    try {
+      usuario = await User.create({
+        nombre,
+        email,
+        password: passwordCifrada,
+        rol: esEmpresa ? "empresa" : "candidato",
+        ...(empresa ? { empresa: empresa._id } : {}),
+      });
+    } catch (error) {
+      // Si falla el usuario, no dejamos una empresa huérfana
+      if (empresa) await Company.findByIdAndDelete(empresa._id);
+      throw error;
+    }
 
     await guardarSesion(usuario);
 
@@ -64,6 +90,7 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
+    console.error("ERROR REGISTRO:", error);
     return Response.json(
       { ok: false, error: "Error al registrar el usuario" },
       { status: 500 }

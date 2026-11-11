@@ -42,6 +42,7 @@ export async function POST(request) {
       },
     });
   } catch (error) {
+    console.error("ERROR LOGIN:", error);   // <- agrega esta línea
     return Response.json(
       { ok: false, error: "Error al iniciar sesión" },
       { status: 500 }

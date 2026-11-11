@@ -14,6 +14,8 @@ export default function AuthCard() {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [tipo, setTipo] = useState("candidato"); // "candidato" o "empresa"
+  const [nombreEmpresa, setNombreEmpresa] = useState("");
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
 
@@ -33,7 +35,7 @@ export default function AuthCard() {
       const ruta = esLogin ? "/api/auth/login" : "/api/auth/register";
       const cuerpo = esLogin
         ? { email, password }
-        : { nombre, email, password };
+        : { nombre, email, password, tipo, nombreEmpresa };
 
       const res = await fetch(ruta, {
         method: "POST",
@@ -47,7 +49,9 @@ export default function AuthCard() {
         return;
       }
 
-      router.push("/vacantes");
+      router.push(
+        data.usuario?.rol === "empresa" ? "/empresa/vacantes" : "/vacantes"
+      );
       router.refresh();
     } catch {
       setError("No se pudo conectar con el servidor");
@@ -90,9 +94,48 @@ export default function AuthCard() {
 
       <form onSubmit={enviar} className="space-y-4">
         {!esLogin && (
+          <div className="flex rounded-xl bg-[#eceef2] p-1">
+            {[
+              { valor: "candidato", etiqueta: "Soy candidato" },
+              { valor: "empresa", etiqueta: "Soy empresa" },
+            ].map((op) => (
+              <button
+                key={op.valor}
+                type="button"
+                onClick={() => setTipo(op.valor)}
+                className={`flex-1 rounded-lg py-2 text-xs font-semibold transition ${
+                  tipo === op.valor
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500"
+                }`}
+              >
+                {op.etiqueta}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {!esLogin && tipo === "empresa" && (
+          <div>
+            <label className={claseLabel} htmlFor="nombreEmpresa">
+              Nombre de la empresa
+            </label>
+            <input
+              id="nombreEmpresa"
+              type="text"
+              required
+              value={nombreEmpresa}
+              onChange={(e) => setNombreEmpresa(e.target.value)}
+              placeholder="Ej. TechNova Solutions"
+              className={claseInput}
+            />
+          </div>
+        )}
+
+        {!esLogin && (
           <div>
             <label className={claseLabel} htmlFor="nombre">
-              Nombre completo
+              {tipo === "empresa" ? "Tu nombre (representante)" : "Nombre completo"}
             </label>
             <input
               id="nombre"
