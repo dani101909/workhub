@@ -31,7 +31,10 @@ function calcularCompletitud(u) {
   return { pasos, porcentaje };
 }
 
-export default async function PerfilPage() {
+export default async function PerfilPage({ searchParams }) {
+  const parametros = await searchParams;
+  const abrirEdicion = !!parametros.editar;
+
   const sesion = await obtenerSesion();
   if (!sesion) redirect("/login");
 
@@ -87,7 +90,11 @@ export default async function PerfilPage() {
       </p>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <ProfileForm usuario={inicial} />
+        <ProfileForm
+          key={abrirEdicion ? "edicion" : "lectura"}
+          usuario={inicial}
+          abrirEdicion={abrirEdicion}
+        />
 
         <div className="space-y-6">
           <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

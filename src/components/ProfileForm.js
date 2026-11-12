@@ -27,11 +27,15 @@ function Seccion({ titulo, children }) {
 
 const Vacio = ({ children }) => <p className="text-sm text-slate-400">{children}</p>;
 
-export default function ProfileForm({ usuario }) {
+export default function ProfileForm({ usuario, abrirEdicion = false }) {
   const router = useRouter();
-  const [editando, setEditando] = useState(false);
-  const [datos, setDatos] = useState(null);
-  const [habilidadesTexto, setHabilidadesTexto] = useState("");
+  const [editando, setEditando] = useState(abrirEdicion);
+  const [datos, setDatos] = useState(() =>
+    abrirEdicion ? structuredClone(usuario) : null
+  );
+  const [habilidadesTexto, setHabilidadesTexto] = useState(
+    abrirEdicion ? usuario.habilidades.join(", ") : ""
+  );
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
   const [exito, setExito] = useState(false);
@@ -113,7 +117,7 @@ export default function ProfileForm({ usuario }) {
               <input className={input} value={datos.linkedin} placeholder="https://linkedin.com/in/..." onChange={(e) => cambiar("linkedin", e.target.value)} />
             </Campo>
             <Campo etiqueta="Enlace a tu CV">
-              <input className={input} value={datos.cvUrl} placeholder="https://drive.google.com/..." onChange={(e) => cambiar("cvUrl", e.target.value)} />
+              <input className={input} autoFocus={abrirEdicion} value={datos.cvUrl} placeholder="https://drive.google.com/..." onChange={(e) => cambiar("cvUrl", e.target.value)} />
             </Campo>
           </div>
         </Seccion>
