@@ -153,7 +153,7 @@ export default async function VacantesPage({ searchParams }) {
             return (
               <article
                 key={String(vacante._id)}
-                className="relative flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                className="relative flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row"
               >
                 {vacante.destacado && (
                   <span className="absolute right-0 top-0 rounded-bl-lg rounded-tr-2xl bg-[#13203f] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
@@ -203,8 +203,8 @@ export default async function VacantesPage({ searchParams }) {
                   </div>
                 </div>
 
-                <div className="flex shrink-0 flex-col items-end justify-between pt-4">
-                  <div className="flex items-center gap-3">
+                <div className="flex shrink-0 flex-col items-start justify-between gap-2 sm:items-end sm:pt-4">
+                  <div className="flex flex-wrap items-center gap-3">
                     <p className="text-sm font-bold text-slate-900">
                       {formatearSalario(vacante.salarioMin, vacante.salarioMax)}
                     </p>

@@ -37,7 +37,7 @@ export default async function EmpresaLayout({ children }) {
     : null;
 
   return (
-    <div className="flex min-h-screen bg-[#f1f4f9] text-slate-900">
+    <div className="flex min-h-screen flex-col bg-[#f1f4f9] text-slate-900 lg:flex-row">
       <Sidebar
         nombre={usuario.nombre}
         iniciales={obtenerIniciales(usuario.nombre)}
@@ -46,7 +46,7 @@ export default async function EmpresaLayout({ children }) {
         perfilHref="/empresa/perfil"
       />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-8 py-3">
+        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:px-8">
           <p className="text-sm font-semibold text-slate-700">
             {empresa?.nombre ?? "Tu empresa"}
           </p>
@@ -57,7 +57,7 @@ export default async function EmpresaLayout({ children }) {
             + Nueva vacante
           </Link>
         </header>
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-8">
           {empresa ? (
             children
           ) : (

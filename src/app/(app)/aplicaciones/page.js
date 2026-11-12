@@ -123,8 +123,13 @@ export default async function AplicacionesPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-slate-600">{aplicacion.etapa}</td>
-                    <td className="px-6 py-4 text-xs font-semibold text-[#3b6ef5]">
-                      Ver detalles →
+                    <td className="px-6 py-4 text-xs font-semibold">
+                      <Link
+                        href={`/aplicaciones/${String(aplicacion._id)}`}
+                        className="text-[#3b6ef5] hover:underline"
+                      >
+                        Ver detalles →
+                      </Link>
                     </td>
                   </tr>
                 );
